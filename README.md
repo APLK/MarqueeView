@@ -19,7 +19,7 @@
         app:mvSingleLine="true"</br>
         app:mvTextColor="#ffffff"</br>
         app:mvTextSize="14sp"/></br>
-    
+  </br>  
 ### 2.在Activity中启动一个handle,模拟每隔3秒自动发送一条公告消息
 private Handler mhandler = new Handler() {</br>
         public void handleMessage(Message msg) {</br>
@@ -68,7 +68,7 @@ private Handler mhandler = new Handler() {</br>
         mhandler.removeCallbacks(mRunnable);</br>
         super.onDestroy();</br>
     }</br>
-        
+  </br>      
  ### 3.设置轮播的初始化数据,并监听每个view动画结束时的事件和点击事件
  mInfo = new ArrayList<>();</br>
         mInfo.add("准备开始推送公告了,请注意!");</br>
@@ -86,11 +86,11 @@ private Handler mhandler = new Handler() {</br>
         });</br>
         mMarquee.setOnItemClickListener(new MarqueeView.OnItemClickListener() {</br>
             @Override</br>
-            public void onItemClick(int position, TextView textView) {</br>
-                Toast.makeText(MainActivity.this,"点击了公告:"+mInfo.get(position),Toast.LENGTH_SHORT).show();</br>
+            public void onItemClick(CharSequence text, TextView textView) {</br>
+                Toast.makeText(MainActivity.this,"点击了公告:"+text,Toast.LENGTH_SHORT).show();</br>
             }</br>
         });</br>
-        
+        </br>
  ### 4.去除重影的问题
   @Override</br>
     public void onStart() {</br>
