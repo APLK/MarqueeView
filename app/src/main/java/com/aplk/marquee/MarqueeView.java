@@ -7,6 +7,7 @@ import android.support.annotation.AnimRes;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
@@ -51,6 +52,12 @@ public class MarqueeView extends ViewFlipper {
     private List<? extends CharSequence> notices = new ArrayList<>();
     private OnItemClickListener onItemClickListener;
     private AnimationEndListener animationEndListener;
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    private int type=0;
 
     public MarqueeView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -215,7 +222,11 @@ public class MarqueeView extends ViewFlipper {
         clearAnimation();
 
         position = 0;
-        addView(createTextView(notices.get(position)));
+        if (type == 0) {
+            addView(createTextView(notices.get(position)));
+        } else {
+            addView(createView(notices.get(position),notices.get(position)));
+        }
 
         if (notices.size() >= 1) {
             setInAndOutAnimation(inAnimResId, outAnimResID);
@@ -243,9 +254,6 @@ public class MarqueeView extends ViewFlipper {
     }
 
     public void createNextTextView(String notice) {
-//        if (getChildCount() > 0) {
-//            removeViewAt(0);
-//        }
         if (TextUtils.isEmpty(notice)) {
             position++;
             if (position >= notices.size()) {
@@ -255,8 +263,26 @@ public class MarqueeView extends ViewFlipper {
             if (view.getParent() == null) {
                 addView(view);
             }
-        }else{
+        } else {
             View view = createTextView(notice);
+            if (view.getParent() == null) {
+                addView(createTextView(notice));
+            }
+        }
+
+    }
+    public void createNextView(String notice,String notice2) {
+        if (TextUtils.isEmpty(notice)) {
+            position++;
+            if (position >= notices.size()) {
+                position = 0;
+            }
+            View view = createView(notices.get(position),notices.get(position));
+            if (view.getParent() == null) {
+                addView(view);
+            }
+        } else {
+            View view = createView(notice,notice2);
             if (view.getParent() == null) {
                 addView(view);
             }
@@ -283,8 +309,18 @@ public class MarqueeView extends ViewFlipper {
             }
         });
         textView.setText(text);
-        textView.setTag(position);
+        //        textView.setTag(position);
         return textView;
+    }
+
+    private View createView(final CharSequence text1, final CharSequence text2) {
+        View view = (View) getChildAt((getDisplayedChild() + 1) % 3);
+        if (view ==null) {
+            view = LayoutInflater.from(getContext()).inflate(R.layout.marquee_view, null);
+        }
+        ((TextView)view.findViewById(R.id.text1)).setText(text1);
+        ((TextView)view.findViewById(R.id.text2)).setText(text2);
+        return view;
     }
 
     public int getPosition() {
